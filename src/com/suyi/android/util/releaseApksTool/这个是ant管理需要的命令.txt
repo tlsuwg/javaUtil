@@ -1,0 +1,55 @@
+                  涉及到jar的都要看看
+
+
+
+
+        // 0 删除所有的APK
+
+
+		// 1 appdear 放到根目录
+		
+		 
+
+		// 2 E:\Java\android-sdk-windows\tools\android.bat update project -p E:\android_su_app\pdouADNew3.4 -t 6
+
+		// 3 build.xml release
+
+		// 4   local.properties
+
+		sdk.dir=E:\\Java\\android-sdk-windows
+		has.keystore=true
+		key.store=appdear
+		key.alias=appdear
+		key.store.password=appdear
+		key.alias.password=appdear
+		target=Google Inc.:Google APIs:7
+
+
+
+
+                // Process androidFormat;
+		// try {
+		// androidFormat = Runtime.getRuntime().exec(
+		// "android.bat update project -p " + packagePath + " -t 7");
+		// InputStream is = androidFormat.getInputStream();
+		// BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		// String line = null;
+		// while ((line = br.readLine()) != null) {
+                // System.out.println("androidFormat" + line);
+		// }
+		//
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
+
+
+
+
+
+
+
+
+
+	
