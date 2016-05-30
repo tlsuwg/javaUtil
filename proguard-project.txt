@@ -1,22 +1,45 @@
-# To enable ProGuard in your project, edit project.properties
-# to define the proguard.config property as described in that file.
-#
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in ${sdk.dir}/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the ProGuard
-# include property in project.properties.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
 
-# Add any project specific keep options here:
+-printmapping bin/classes-processed_suwg.map
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-optimizationpasses 5
+
+# Reduce the size of the output some more.
+-dontusemixedcaseclassnames
+-repackageclasses 'kan.ni.die.a.sb'
+-allowaccessmodification
+
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-dontpreverify
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class com.android.vending.licensing.ILicensingService
+-keep public class * extends android.view.View
+-keep public class * extends android.widget.ImageView
+-keep public class * extends android.view.ViewGroup
+-keep public class * extends android.widget.LinearLayout
+-keep public class * extends android.widget.TextView
+-keep public class * extends android.widget.Gallery
+-keep public class * extends android.widget.ListView
+-keep public class * extends android.widget.ScrollView
+-keep public class * extends android.widget.RelativeLayout
+-keep public class * extends android.widget.FrameLayout
+-keep public class * extends android.widget.ImageSwitcher
+-keep public class * extends android.widget.AppWidgetProvider
+-keep public class * extends android.support.v4.**
+-keep public class * extends android.app.Fragment
+
+
+
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+
+
+
