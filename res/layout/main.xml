@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFD39B"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="log" />
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        
+        <Button
+            android:id="@+id/input_some_one_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="联系人设置" />
+        
+        <TextView
+            android:id="@+id/contacts_size_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8" />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+      
+        <Button
+            android:id="@+id/input_voice_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置音频" />
+        
+          <TextView
+            android:id="@+id/voice_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="map.map3" />
+          
+           <Button
+            android:id="@+id/test_voice_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试" />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="手机温度过高（暂停拨打）上限：" />
+
+        <EditText
+            android:id="@+id/input_temperature_text"
+            android:inputType="number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="80dp"
+            android:hint="60" />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="短信服务" />
+
+        <CheckBox
+            android:id="@+id/send_msg_CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/set_msg_lin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F0FFF0"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/input_msg_length_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="短信内容：70字为一条短信" />
+
+        <EditText
+            android:id="@+id/input_msg_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="你好，如果感兴趣，请联系...."
+            android:lines="3" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="设置短信发送阈值: \n（接听时间，超过该时间才发送短信）\n（0代表必须接通即发送）;（-1代表接听即发送）;(-2代表一定会发送)" />
+
+        <EditText
+            android:id="@+id/input_msg_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned"
+            android:text="5" />
+        
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/settingOK"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设置完成，开始拨打" />
+
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="停止" />
+
+    <Button
+        android:id="@+id/settingL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="启动监听电话，测试使用" />
+
+</LinearLayout>
