@@ -33,7 +33,6 @@ public class SuActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		check()
 		super.onCreate(savedInstanceState);
 		mContext=this;
 		mHandler=new Handler();
