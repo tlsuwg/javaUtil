@@ -14,9 +14,9 @@ import java.util.List;
 public class DeleteProkactInfo {
 
 	// static String packagePath =
-	// "E:\\\android_su_app_java\\IMMemoryCache_3";// ������\\
+	// "E:\\\android_su_app_java\\IMMemoryCache_3";// 锟斤拷锟斤拷锟斤拷\\
 
-	static String packagePath = "E:\\android_link\\pdouADNew3.5_ss_new";// ������\\
+	static String packagePath = "E:\\android_link\\pdouADNew3.5_ss_new";// 锟斤拷锟斤拷锟斤拷\\
 
 	static String newdirstr;
 
@@ -26,8 +26,8 @@ public class DeleteProkactInfo {
 		File olddir = new File(packagePath);
 
 		if (!olddir.getAbsolutePath().equals(packagePath)) {
-			System.err.println("�ܼҵ�΢��");
-			System.err.println("��/�ĳ�\\");
+			System.err.println("锟杰家碉拷微锟斤拷");
+			System.err.println("锟斤拷/锟侥筹拷\\");
 			System.exit(1);
 		}
 

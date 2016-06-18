@@ -9,22 +9,17 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
-
 public class ChangeGBKToUTF8 {
-//	±ØĞë±£Ö¤´ËÀà£¨³ÌĞòÈë¿ÚÎªGBK£©
-//	±£Ö¤¶ÁÁ÷ÎªGBK
-//	ÉÏÃæÁ½¸öÌõ¼şÕı³£¶Á³öGBKÎÄ¼ş
-//	È»ºóÊ¹ÓÃUTF8Ğ´³öÎÄ¼ş
-//	Èç¹û±¾³ÌĞò²»ÊÇGBKÎŞ·¨¶Á³öGBKÎÄ¼ş
-	
-	
+	// å¿…é¡»ä¿è¯æ­¤ç±»ï¼ˆç¨‹åºå…¥å£ä¸ºGBKï¼‰
+	// ä¿è¯è¯»æµä¸ºGBK
+	// ä¸Šé¢ä¸¤ä¸ªæ¡ä»¶æ­£å¸¸è¯»å‡ºGBKæ–‡ä»¶
+	// ç„¶åä½¿ç”¨UTF8å†™å‡ºæ–‡ä»¶
+	// å¦‚æœæœ¬ç¨‹åºä¸æ˜¯GBKæ— æ³•è¯»å‡ºGBKæ–‡ä»¶
 
+	// static String packagePath = "E:\\android_su_app_java\\IMMemoryCache_3";//
+	// å¿…é¡»æ˜¯\\
 
-//	static String packagePath = "E:\\android_su_app_java\\IMMemoryCache_3";// ±ØĞëÊÇ\\
-	
-	
-	
-	static String packagePath = "E:\\android_ch\\ch08_aidlClient_Server";// ±ØĞëÊÇ\\
+	static String packagePath = "E:\\JavaWorkspace\\JavaUtilGBK";// å¿…é¡»æ˜¯\\
 
 	static String newdirstr;
 
@@ -32,17 +27,17 @@ public class ChangeGBKToUTF8 {
 		// TODO Auto-generated method stub
 
 		File olddir = new File(packagePath);
-		
-		if(!olddir.getAbsolutePath().equals(packagePath)){
-			System.err.println("°Ü¼ÒµÄÎ¢Èí");
-			System.err.println("°Ñ/¸Ä³É\\\\");
+
+		if (!olddir.getAbsolutePath().equals(packagePath)) {
+			System.err.println("è´¥å®¶çš„å¾®è½¯");
+			System.err.println("æŠŠ/æ”¹æˆ\\\\");
 			System.exit(1);
 		}
-
-		File newdir = new File(packagePath + new Date().getTime()+"UTF");
+		File newdir = new File(packagePath + new Date().getTime() + "UTF");
+		
 
 		newdir.mkdir();
-		
+
 		newdirstr = newdir.getAbsolutePath();
 
 		changeUTF(olddir);
@@ -78,7 +73,6 @@ public class ChangeGBKToUTF8 {
 			}
 
 			copyFileToNewDir(olddir);
-
 		}
 
 	}
@@ -86,17 +80,12 @@ public class ChangeGBKToUTF8 {
 	private static void changeGBK_To_UTF8(File olddir) {
 		// TODO Auto-generated method stub
 
-		Su_GBK_FileReader reader = new Su_GBK_FileReader(olddir);
-
+		Su_GBKUTF8_FileReader reader = new Su_GBKUTF8_FileReader(olddir,isUTF(olddir));
 		List<String> list = reader.read();
-
 		String newfilepath = olddir.getAbsolutePath().replace(packagePath,
 				newdirstr);
-
 		File newFile = new File(newfilepath);
-
 		System.out.println("changeGBK_To_UTF8  to" + newfilepath);
-
 		try {
 			newFile.createNewFile();
 		} catch (IOException e) {
@@ -105,7 +94,7 @@ public class ChangeGBKToUTF8 {
 		}
 
 		Su_UTF_FileWriter writer = new Su_UTF_FileWriter(newFile);
-		
+
 		writer.writeUTF8(list, newFile);
 
 	}
@@ -165,10 +154,10 @@ public class ChangeGBKToUTF8 {
 			in.close();
 
 			if (b[0] == -17 && b[1] == -69 && b[2] == -65)
-				return true;// 
+				return true;//
 			else
 				return false;
-			// 
+			//
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

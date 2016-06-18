@@ -1,4 +1,4 @@
-package com.suyi.util.change_GBK_To_UTF8;
+package com.suyi.util.changeRes_GBK_;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +21,8 @@ public class Su_UTF_FileWriter {
 		// TODO Auto-generated method stub
 		
 		try {
-			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newFile),"UTF-8");
+//			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newFile),"UTF-8");
+			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newFile),"GBK");
 			
 			while (list.size() > 0) {
 				String str = list.remove(0);

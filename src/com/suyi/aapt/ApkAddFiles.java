@@ -1,28 +1,26 @@
 package com.suyi.aapt;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ApkAddFiles {
-	
-//	需要使用默认环境的方式执行命令
-//	aapt没有指定源文件 和存放目录的结构
-//	使用什么样子的结构就放置在什么样子的结构里面
-//	使用到了当前环境变量的方法
+
+	// 需要使用默认环境的方式执行命令
+	// aapt没有指定源文件 和存放目录的结构
+	// 使用什么样子的结构就放置在什么样子的结构里面
+	// 使用到了当前环境变量的方法
 	private static final String SECRET_KEY_PATH = "D:/androidAapt/";
 	private static final String SECRET_KEY_NAME = "debug.keystore";
 	private static final String SECRET_KEY_PASS = "android";
 	private static final String SECRET_KEY_ALIAS_PASS = "android";
 	private static final String SECRET_KEY_ALIAS = "androiddebugkey";
 	private static final String SECRET_KEY_FOR_1_DOT_7 = " -digestalg SHA1 -sigalg MD5withRSA";
-	private static final String UNSIGN_FILE_NAME = "a.apk";//签名 或者未签名
+	private static final String UNSIGN_FILE_NAME = "a.apk";// 签名 或者未签名
 	private static final String UNSIGN_FILE_NAME_Temp = "claered_temp.apk";
 	private static final String SIGN_FILE_NAME = "signed/";
 
@@ -30,108 +28,89 @@ public class ApkAddFiles {
 	String apkClearPath;
 	List<String> listForDel = new ArrayList<String>();
 	File baseDir;
+	List<String> listC = new Vector<String>();
+	int ExecutorsThread = 3;
 
-	String[] addFiles = new String[] { "assets/Kepler_jar_2016_04_12_11-15-09.kep" };
-	private static final String[] chanles = new String[] { "s", "d", "y" };
+	private static String[] addFiles = new String[] { "assets/Kepler_jar_2016_04_12_11-15-09.kep" };// 每个apk需要添加的内容
+	private static String[] chanles = new String[] { "a", "b", "c" };// 渠道名称
+	
 
 	public ApkAddFiles() {
 		super();
 		apkPath = SECRET_KEY_PATH + UNSIGN_FILE_NAME;
 		apkClearPath = SECRET_KEY_PATH + UNSIGN_FILE_NAME_Temp;
 		baseDir = new File(SECRET_KEY_PATH);
+		for (int a='A' ;a<='Z';a++) {
+//			for (String cc1 : chanles) {
+//				for (String chanle : chanles) {
+					listC.add((char)a +"");
+//				}
+//			}
+		}
 	}
 
-	public static void main(String args[]) throws IOException {
+	public static void main(String args[]) throws IOException,
+			InterruptedException {
 		ApkAddFiles mApkAddFiles = new ApkAddFiles();
 		mApkAddFiles.doThis();
 	}
 
-	private void doThis() throws IOException {
+	private void doThis() throws IOException, InterruptedException {
 		System.out.println("备份apk");
-		Copy(apkPath, apkClearPath);
-		System.out.println("清除apk");
+		aaptUtil.Copy(apkPath, apkClearPath);
+		System.out.println("清理apk中签名等信息");
 		getOneClearedApk();
-		System.out.println("全部添加需要files");
-		addSomeNeedFiles();// 共性需要的
+	
+	
+		final File signDir = new File(SECRET_KEY_PATH + SIGN_FILE_NAME);
+		final File addDir = new File(SECRET_KEY_PATH + SIGN_FILE_NAME
+				+ "assets/");
+		if (!addDir.exists()) {
+			addDir.mkdir();// 文件夹
+		}
 
-		
-		for (String chanle : chanles) {
-			String apkName = chanle + ".apk";
-			File dir = new File(SECRET_KEY_PATH + SIGN_FILE_NAME);
-			String newPathChanle = SECRET_KEY_PATH + SIGN_FILE_NAME + apkName;
-			Copy(apkClearPath, newPathChanle);
+		final ExecutorService executor = Executors.newFixedThreadPool(ExecutorsThread);
+		for (int i = 0; i < ExecutorsThread; i++) {
+			executor.execute(new MakeOneApkTask(signDir, addDir));
+		}
+		executor.shutdown();
 
-			// ==========修改渠道文件
-			String addFilePath = "Kepler_jar_2016_04_12_11-15-"
-					+ (int) (Math.random() * 100) + ".kep";
-			File d = new File(SECRET_KEY_PATH + SIGN_FILE_NAME + "assets/");
-			if (!d.exists()) {
-				d.mkdirs();
+		new Thread(new Runnable() {//监听进程结束
+			public void run() {
+				while (true) {
+					if (executor.isTerminated()) {
+						String[] as = addDir.list();
+						for (String ss : as) {
+							System.out.println("ssssssssssssssssssss" + ss);
+						}
+						addDir.delete();// 文件删除必须delete
+						new File(apkClearPath).deleteOnExit();
+						System.out.println("OKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOK");
+						break;
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
 			}
-			File file = new File(d, addFilePath);
-			file.createNewFile();
+		}).start();
 
-			aaptAddOneFile(apkName + " assets/" + addFilePath, dir);
-			aaptRemoveOneFile(apkName + " " + addFiles[0], dir);
-			file.deleteOnExit();
-			d.deleteOnExit();
-			// ==========
-
-			String cmd = getCmdForApksigner(apkName);
-			System.out.println("cmd:" + cmd);
-			Process process = Runtime.getRuntime().exec(cmd, null, dir);
-			proErrInfoShow(process, cmd);
-			ArrayList<String> infos = readLins(process.getInputStream());
-			showInfo(infos);
-			process.destroy();
-			
-			if(isApkNew)
-			new File(newPathChanle).delete();
-			
-		}
-
-		new File(apkClearPath).deleteOnExit();
-		System.out.println(apkClearPath);
-		System.out.println("OKOKOMOKOKOKOKO");
 	}
 
-	private void addSomeNeedFiles() throws IOException {
-		for (String cmd_add : addFiles) {
-			aaptAddOneFile(UNSIGN_FILE_NAME_Temp + " " + cmd_add, baseDir);
-		}
-	}
+	
 
-	private void aaptAddOneFile(String cmd_add, File baseDir)
-			throws IOException {
-		String cmdadd = "aapt a " + cmd_add;
-		System.out.println("cmd:" + cmdadd);
-		Process process = Runtime.getRuntime().exec(cmdadd, null, baseDir);
-		proErrInfoShow(process, cmdadd);
-		ArrayList<String> infos = readLins(process.getInputStream());
-		showInfo(infos);
-	}
-
-	private void aaptRemoveOneFile(String cmd_add, File baseDir)
-			throws IOException {
-		String cmdadd = "aapt r " + cmd_add;
-		System.out.println("cmd:" + cmdadd);
-		Process process = Runtime.getRuntime().exec(cmdadd, null, baseDir);
-		proErrInfoShow(process, cmdadd);
-		ArrayList<String> infos = readLins(process.getInputStream());
-		showInfo(infos);
-	}
-
-	private void getOneClearedApk() throws IOException {
-
-		String cmd = "aapt l " + UNSIGN_FILE_NAME_Temp;
+	private void getOneClearedApk() throws IOException, InterruptedException {
+		String cmd = " aapt l " + UNSIGN_FILE_NAME_Temp;
 		System.out.println("cmd:" + cmd);
-
 		Process process = Runtime.getRuntime().exec(cmd, null, baseDir);
-		proErrInfoShow(process, cmd);
-
+//		process.getOutputStream().close(); 
 		listForDel.clear();
-		ArrayList<String> infos = readLins(process.getInputStream());
-		showInfo(infos);
+		ArrayList<String> infos = aaptUtil.readLins(process.getInputStream());
+		aaptUtil.showInfo(infos);
 		if (infos != null && infos.size() > 0) {
 			for (String iii : infos) {
 				if (iii != null && !"".equals(iii)) {
@@ -144,79 +123,33 @@ public class ApkAddFiles {
 				}
 			}
 		}
+		aaptUtil.proErrInfoShow(process, cmd);
+		process.waitFor();
 
 		System.out.println("删除");
-		
+
 		for (String cmd_dle : listForDel) {
-			aaptRemoveOneFile(UNSIGN_FILE_NAME_Temp + " " + cmd_dle, baseDir);
+			aaptUtil.aaptRemoveOneFile(UNSIGN_FILE_NAME_Temp + " " + cmd_dle, baseDir);
 		}
-	}
-
-	public static void Copy(String oldPath, String newPath) throws IOException {
-		new File(newPath).deleteOnExit();
-		int byteread = 0;
-		File oldfile = new File(oldPath);
-		InputStream inStream = new FileInputStream(oldfile);
-		FileOutputStream fs = new FileOutputStream(new File(newPath));
-		byte[] buffer = new byte[1024];
-		while ((byteread = inStream.read(buffer)) != -1) {
-			fs.write(buffer, 0, byteread);
-		}
-		inStream.close();
-	}
-
-	private void proErrInfoShow(Process process, String cmd) throws IOException {
-		ArrayList<String> infos = readLins(process.getErrorStream());
-		if (infos != null && infos.size() > 0) {
-			showErrInfo(infos, cmd + "执行出错");
-			throw new IOException("");
-		}
-	}
-
-	private void showErrInfo(ArrayList<String> infos, String errInfo) {
-
-		if (errInfo != null)
-			System.err.println(errInfo);
-		if (infos != null)
-			for (String err : infos) {
-				System.err.println(err);
-			}
-	}
-	
-	private void showInfo(ArrayList<String> infos) {
 		
-		if (infos != null)
-			for (String err : infos) {
-				System.out.println("___"+err);
-			}
-	}
-
-	private static ArrayList<String> readLins(InputStream inStream)
-			throws IOException {
-
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				inStream, "gb2312"));
-		ArrayList<String> infos = new ArrayList<String>();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			infos.add(line);
+		System.out.println("全部添加需要files");
+		for (String cmd_add : addFiles) {
+			aaptUtil.aaptAddOneFile(UNSIGN_FILE_NAME_Temp + " " + cmd_add, baseDir);
 		}
-		reader.close();
-		inStream.close();
-		return infos;
-
 	}
 
+
+
+	
 	// static boolean isTest = true;// 生成2个
-	static boolean isApkNew=true;// 生成2个
+	static boolean isApkNew = true;// 生成2个
 
 	private String getCmdForApksigner(String apkName) {
-
 		StringBuffer buffer = new StringBuffer();
 		buffer.setLength(0);
 		buffer.append("jarsigner ");
 		buffer.append(SECRET_KEY_FOR_1_DOT_7); // 1.7的jdk要加上这个
-//		buffer.append(" -verbose ");
+		// buffer.append(" -verbose ");
 		buffer.append(" -keystore ").append(SECRET_KEY_PATH + SECRET_KEY_NAME);
 		// .append( SECRET_KEY_NAME)
 		buffer.append(" -storepass ").append(SECRET_KEY_PASS);
@@ -227,10 +160,62 @@ public class ApkAddFiles {
 		} else {
 			buffer.append(" ");
 		}
-
 		buffer.append(apkName).append(" ").append(SECRET_KEY_ALIAS).append(" ");
 
 		return buffer.toString();
+	}
+
+	class MakeOneApkTask implements Runnable {
+		File signDir, addDir;
+		public MakeOneApkTask(File signDir, File addDir) {
+			this.signDir = signDir;
+			this.addDir = addDir;
+		}
+
+		public void run() {
+			String chanle;
+			while (listC.size() > 0 && (chanle = listC.remove(0)) != null) {
+				try {
+					makeOne(chanle);
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.exit(2);
+				}
+			}
+		}
+
+		private void makeOne(String chanle) throws IOException,
+				InterruptedException {
+			String apkName = chanle + ".apk";
+			String newPathChanleApk = SECRET_KEY_PATH + SIGN_FILE_NAME
+					+ apkName;
+			synchronized (apkClearPath) {
+				aaptUtil.Copy(apkClearPath, newPathChanleApk);
+			}
+
+			// ==========修改渠道文件
+			String addFilePath = "Kepler_jar_2016_04_12_11-15-"
+					+ (int) (Math.random() * 100) + ".kep";
+			File addfile = new File(addDir, addFilePath);
+			addfile.createNewFile();// 文件夹存在
+
+			aaptUtil.aaptAddOneFile(apkName + " assets/" + addFilePath, signDir);
+			aaptUtil.aaptRemoveOneFile(apkName + " " + addFiles[0], signDir);
+			System.out.println("--" + addfile.getAbsolutePath());
+			addfile.delete();// 文件夹 VS 0KB
+			// ==========
+			String cmd = getCmdForApksigner(apkName);
+			System.out.println("cmd:" + cmd);
+			Process process = Runtime.getRuntime().exec(cmd, null, signDir);
+			aaptUtil.proErrInfoShow(process, cmd);
+			ArrayList<String> infos = aaptUtil.readLins(process.getInputStream());
+			aaptUtil.showInfo(infos);
+			process.waitFor();
+			if (isApkNew) {
+				new File(newPathChanleApk).deleteOnExit();
+				System.out.println("--" + newPathChanleApk);
+			}
+		}
 	}
 
 }
