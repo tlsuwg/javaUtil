@@ -13,10 +13,9 @@ import java.util.List;
 
 public class DeleteProkactInfo {
 
-	// static String packagePath =
-	// "E:\\\android_su_app_java\\IMMemoryCache_3";// 锟斤拷锟斤拷锟斤拷\\
 
 	static String packagePath = "E:\\android_link\\pdouADNew3.5_ss_new";// 锟斤拷锟斤拷锟斤拷\\
+
 
 	static String newdirstr;
 
@@ -27,7 +26,7 @@ public class DeleteProkactInfo {
 
 		if (!olddir.getAbsolutePath().equals(packagePath)) {
 			System.err.println("锟杰家碉拷微锟斤拷");
-			System.err.println("锟斤拷/锟侥筹拷\\");
+			System.err.println("�ܼҵ�΢��");
 			System.exit(1);
 		}
 

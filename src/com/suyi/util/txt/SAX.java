@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 public class SAX {
 
 	/**
@@ -15,7 +14,6 @@ public class SAX {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//
 
 		String dir[] = { "C:/Users/suweiguang/Desktop/单品log不使用.txt",
 				"C:/Users/suweiguang/Desktop/单品log使用.txt" };
@@ -71,4 +69,5 @@ public class SAX {
 		}
 
 	}
+
 }

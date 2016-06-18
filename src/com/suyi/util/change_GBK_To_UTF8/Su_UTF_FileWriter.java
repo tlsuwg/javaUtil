@@ -25,7 +25,7 @@ public class Su_UTF_FileWriter {
 			
 			while (list.size() > 0) {
 				String str = list.remove(0);
-//				System.out.println("鍐欏叆" + str);
+//				System.out.println("写入" + str);
 				out.write(str+"\n");
 			}
 		
@@ -46,7 +46,7 @@ public class Su_UTF_FileWriter {
 //
 //			while (list.size() > 0) {
 //				String str = list.remove(0);
-//				System.out.println("鍐欏叆" + str);
+//				System.out.println("写入" + str);
 //				bw.write(str+"\n");
 //			}
 //

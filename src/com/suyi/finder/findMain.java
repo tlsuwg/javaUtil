@@ -25,9 +25,8 @@ public class findMain {
 		// File d = new File("E:/android_su_app/PINGke????/src");
 		// File d = new File("E:/android_su_app/PINGke????/res/layout");
 		// File d = new File("E://Java//fanbianyi//bianyi3//apktools//ApkTool");
-		File d = new File("E:/android/workspace/jdsdk_src");
 		
-//		 File d = new File("C://Users//suwg//Desktop//classes_dex2jarfor叔叔.src");
+		 File d = new File("C:\\Users\\suwg\\Desktop\\classes_dex2jarfor叔叔.src");
 
 		findFile(d);
 	}
@@ -69,7 +68,7 @@ public class findMain {
 
 				// System.out.println("=="+line);
 
-				if (line.contains("import com.jd.jdsdk.R") )
+				if (line.contains("ServerSocket") )
 
 				// if ((line.contains("localLayoutParams1.flags"))
 				// ||line.contains("localLayoutParams")

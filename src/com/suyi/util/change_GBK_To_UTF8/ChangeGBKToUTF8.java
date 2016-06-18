@@ -20,6 +20,9 @@ public class ChangeGBKToUTF8 {
 	// 必须是\\
 
 	static String packagePath = "E:\\JavaWorkspace\\JavaUtilGBK";// 必须是\\
+	
+	
+	
 
 	static String newdirstr;
 
@@ -38,6 +41,13 @@ public class ChangeGBKToUTF8 {
 
 		newdir.mkdir();
 
+		if(!olddir.getAbsolutePath().equals(packagePath)){
+			System.err.println("�ܼҵ�΢��");
+			System.err.println("��/�ĳ�\\\\");
+			System.exit(1);
+		}
+
+		
 		newdirstr = newdir.getAbsolutePath();
 
 		changeUTF(olddir);
@@ -94,7 +104,6 @@ public class ChangeGBKToUTF8 {
 		}
 
 		Su_UTF_FileWriter writer = new Su_UTF_FileWriter(newFile);
-
 		writer.writeUTF8(list, newFile);
 
 	}
@@ -157,8 +166,6 @@ public class ChangeGBKToUTF8 {
 				return true;//
 			else
 				return false;
-			//
-
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

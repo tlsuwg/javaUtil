@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import com.suyi.util.change_GBK_To_UTF8.Su_UTF_FileWriter;
+
 public class ChangePackageNameMain {
 
 	static String oldPackage="";//
