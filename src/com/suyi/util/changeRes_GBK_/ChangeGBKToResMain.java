@@ -31,7 +31,8 @@ public class ChangeGBKToResMain {
 	static String newdirstr;
 
 	static HashMap<String, String> mapTrueString = new HashMap<String, String>();
-	static HashMap<String, byte[]> mapBytes = new HashMap<String, byte[]>();
+	static HashMap<String, byte[]> mapBytesApp = new HashMap<String, byte[]>();
+	static HashMap<String, byte[]> mapBytesSer = new HashMap<String, byte[]>();
 
 	static File newdir;
 
@@ -47,47 +48,87 @@ public class ChangeGBKToResMain {
 		newdirstr = newdir.getAbsolutePath();
 		changeUTF(olddir);
 		todb();
+		
+		System.out.println("工程输出在："+newdir.getAbsolutePath());
 	}
 
 	private static void todb() {
 		// TODO Auto-generated method stub
 
-		Iterator<String> it = mapBytes.keySet().iterator();
-
 		ByteArrayOutputStream indexOut = new ByteArrayOutputStream();
-		ByteArrayOutputStream bOutput = new ByteArrayOutputStream();
+		ByteArrayOutputStream bOutputApp = new ByteArrayOutputStream();
+		ByteArrayOutputStream bOutputSer = new ByteArrayOutputStream();
 
 		int size = 0;
-		short indexAll = 0;
-		while (it.hasNext()) {
-			size++;
-			String key = it.next();
-			byte[] bs = mapBytes.get(key);
-			indexAll += bs.length + 2;
-			byte[] indexbs = IntByte.shortToByte(indexAll);
+		short bsAll = 0;
 
-			try {
-				byte s = (byte) (127 * Math.random());
-				bOutput.write(s);
-				bOutput.write(bs);
-				bOutput.write(s);
-				indexOut.write(indexbs);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		{
+			Iterator<String> it = mapBytesApp.keySet().iterator();
+			while (it.hasNext()) {
+				size++;
+				String key = it.next();
+				byte[] bs = mapBytesApp.get(key);
+				bsAll += bs.length + 2;
+				byte[] indexbs = IntByte.shortToByte(bsAll);
+				try {
+					byte s = (byte) (127 * Math.random());
+					bOutputApp.write(s);
+					bOutputApp.write(bs);
+					bOutputApp.write(s);
+					indexOut.write(indexbs);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-			if (size == mapBytes.size()) {
-				System.out.println("最后一个:" + key + " " + mapTrueString.get(key)
-						+ "  " + size + " " + indexAll);
+				if (size == mapBytesApp.size()) {
+					System.out.println("最后一个app:" + key + " "
+							+ mapTrueString.get(key) + "  " + size + " "
+							+ bsAll);
+				}
 			}
 		}
+//==============================================================================
+		{
+			Iterator<String> it = mapBytesSer.keySet().iterator();
+			while (it.hasNext()) {
+				size++;
+				String key = it.next();
+				byte[] bs = mapBytesSer.get(key);
+				bsAll += bs.length + 2;
+				byte[] indexbs = IntByte.shortToByte(bsAll);
+				try {
+					byte s = (byte) (127 * Math.random());
+					bOutputSer.write(s);
+					bOutputSer.write(bs);
+					bOutputSer.write(s);
+					indexOut.write(indexbs);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (size == (mapBytesSer.size()+mapBytesApp.size())) {
+					System.out.println("最后一个sssssssssssss:" + key + " "
+							+ mapTrueString.get(key) + "  " + size + " "
+							+ bsAll);
+				}
+			}
+		}
+		
+		
+		
 
-		byte[] allBs = bOutput.toByteArray();
+		byte[] allBsApp = bOutputApp.toByteArray();
+		byte[] allBsSer = bOutputSer.toByteArray();
 		byte[] indexBs = indexOut.toByteArray();
+		
+		
 
-		System.out.println("数据量:" + size + " bs all len:" + indexAll + " allBs"
-				+ allBs.length + " indexBs" + indexBs.length);
+		System.out.println("String数据量:" + size 
+				+ ";bs all len:" + bsAll 
+				+ "; BsApp"	+ allBsApp.length 
+				+"; SeApp"	+ allBsSer.length 
+				+ "; all indexBs" + indexBs.length);
 
 		String newpath = newdir.getAbsolutePath() + resPath;
 
@@ -96,20 +137,26 @@ public class ChangeGBKToResMain {
 		try {
 			for (int y = 1; y <= 7; y++) {
 				String filen = newpath + "sua_" + y + ".png";
-				if (y == 3) {//
+				if (y == 3) {//index
 					saveFile(filen, indexBs);
-				} else if (y == 5) {// all
-					saveFile(filen, allBs);
+				} else if (y == 5) {// allbytes
+					saveFile(filen, allBsApp);
 				} else {// 随机给几个
 					byte[] ssss = StringUtile.getRadmString(
 							(int) (1024 * Math.random()) + 300).getBytes();
 					saveFile(filen, ssss);
 				}
 			}
+			
+			saveFile(packagePath+"\\sua_server.txt", allBsSer);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+		
+		
+		
+		
 
 	}
 
@@ -238,10 +285,13 @@ public class ChangeGBKToResMain {
 		// Su.LogW("call  max : " + max + " current : " + current);
 
 		if (info.trim().startsWith("*") || info.trim().startsWith("\\")
-				|| info.trim().startsWith("@") || info.contains("@SUA")) {
+				|| info.trim().startsWith("@")
+				|| (info.contains("@SUA") && !info.contains("@SUACore"))) {
 			// System.out.println("直接return:" + info);
 			return info;
 		}
+
+		boolean isCore = info.contains("@SUACore");
 
 		String old = info;
 
@@ -249,13 +299,15 @@ public class ChangeGBKToResMain {
 			String[] args = old.split(in);
 			for (int i = 1; i < args.length; i += 2) {
 				String inString = args[i];
-				// System.out.println("引号内部：" + inString);
+				
 				// try {
 
-				if (inString.length() <=3 ) {
+				if (inString.length() <= 3) {
 					args[i] = in + inString + in;
 					continue;
 				}
+				
+//				 System.out.println("引号内部：" + inString);
 
 				byte[] bs = inString.getBytes();
 				String key = PassMessageDigestUtil.encodeMD5(bs);
@@ -268,7 +320,11 @@ public class ChangeGBKToResMain {
 				}
 
 				mapTrueString.put(key, inString);
-				mapBytes.put(key, bs);
+				if (isCore) {
+					mapBytesSer.put(key, bs);
+				} else {
+					mapBytesApp.put(key, bs);
+				}
 
 				// SUAStringResByteCoder.getSingleton().get("res___ssss");
 				String news = "SUAStringResByteCoder.getSingleton().get(" + in

@@ -18,6 +18,9 @@ public class findMain {
 
 	public static TreeSet set;
 	public static HashMap map;
+	
+	static int httpi;
+	static int nohttpi;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -26,7 +29,7 @@ public class findMain {
 		// File d = new File("E:/android_su_app/PINGke????/res/layout");
 		// File d = new File("E://Java//fanbianyi//bianyi3//apktools//ApkTool");
 		
-		 File d = new File("C:\\Users\\suwg\\Desktop\\classes_dex2jarfor叔叔.src");
+		 File d = new File("E://android//workspace/jdsdk_src//taobaomain.xml");
 
 		findFile(d);
 	}
@@ -40,10 +43,13 @@ public class findMain {
 				findFile(ff);
 			}
 		} else {
-			if (f.getAbsolutePath().endsWith("java")) {
+			if (f.getAbsolutePath().endsWith("xml")) {
 				gethttp(f);
 			}
 		}
+		
+		
+		System.out.println("nohttp"+nohttpi+" "+httpi);
 
 	}
 
@@ -57,23 +63,24 @@ public class findMain {
 
 			String line = null;
 			while (true) {
-				
-
 				line = br.readLine();
-
 				if (line == null) {
 					br.close();
 					break;
 				}
-
-				// System.out.println("=="+line);
-
-				if (line.contains("ServerSocket") )
-
+//				 System.out.println("=="+line);
+				if (line.contains("android:scheme="))
 				// if ((line.contains("localLayoutParams1.flags"))
 				// ||line.contains("localLayoutParams")
 				{
-					System.err.println(f.getAbsolutePath() + "==" + line);
+					
+					if(line.contains("android:scheme=\"http\"")||line.contains("android:scheme=\"https\"")){
+						httpi++;
+					}else{
+						nohttpi++;
+						System.err.println(f.getAbsolutePath() + "==" + line);
+					}
+//					System.err.println(f.getAbsolutePath() + "==" + line);
 
 				}
 			}
